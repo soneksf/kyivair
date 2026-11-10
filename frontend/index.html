@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KyivAir</title>
+<meta name="description" content="Якість повітря в районах Києва: карта AQI, поради та історія вимірювань.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#" aria-label="KyivAir — головна">Kyiv<span>Air</span></a>
+    <span id="demo-badge" class="demo-badge" hidden>демо-дані</span>
+    <div class="topbar-status">
+      <span id="status" class="status" role="status" aria-live="polite">Завантаження даних…</span>
+      <button id="refresh" class="btn-ghost" type="button" aria-label="Оновити дані">
+        <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M16 10a6 6 0 1 1-1.8-4.3M16 3.5v3.2h-3.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Оновити</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+  <div id="error" class="error" role="alert" hidden>
+    <p id="error-text"></p>
+    <button id="retry" class="btn" type="button">Спробувати ще раз</button>
+  </div>
+
+  <section class="intro">
+    <h1>Чи можна сьогодні гуляти у твоєму районі?</h1>
+    <p>Індекс якості повітря (AQI) для 10 районів Києва. Оберіть район на карті або в списку.</p>
+  </section>
+
+  <div class="layout">
+    <section class="map-card" aria-labelledby="map-h">
+      <h2 id="map-h" class="eyebrow">Карта AQI за районами</h2>
+      <div id="map" class="map"></div>
+      <ul id="legend" class="legend" aria-label="Шкала AQI"></ul>
+      <p class="fineprint">Межі районів на карті схематичні. Шкала — US EPA AQI, 0–500.</p>
+    </section>
+
+    <section id="panel" class="panel" aria-labelledby="p-name" aria-live="polite">
+      <div class="panel-head">
+        <h2 id="p-name">—</h2>
+        <p id="p-updated" class="muted"></p>
+      </div>
+      <div class="aqi-block">
+        <div class="aqi-num"><span id="p-aqi">—</span><small>AQI</small></div>
+        <div>
+          <span id="p-level" class="level-pill">—</span>
+          <span id="p-stale" class="stale-pill" hidden>дані застаріли</span>
+          <p id="p-advice" class="advice"></p>
+        </div>
+      </div>
+      <dl class="facts">
+        <div><dt>PM2.5, мкг/м³</dt><dd id="p-pm25">—</dd></div>
+        <div><dt>PM10, мкг/м³</dt><dd id="p-pm10">—</dd></div>
+        <div><dt>Основний забруднювач</dt><dd id="p-dominant">—</dd></div>
+        <div><dt>Датчиків у районі</dt><dd id="p-sensors">—</dd></div>
+      </dl>
+
+      <div class="history">
+        <div class="history-head">
+          <h3>Історія AQI</h3>
+          <div class="seg" role="group" aria-label="Період">
+            <button type="button" data-hours="24" aria-pressed="true">24 год</button>
+            <button type="button" data-hours="168" aria-pressed="false">7 днів</button>
+          </div>
+        </div>
+        <div class="chart-box"><canvas id="chart" aria-label="Графік AQI за період" role="img"></canvas><p id="chart-note" class="chart-note" hidden></p></div>
+        <dl class="mini">
+          <div><dt>Середнє</dt><dd id="c-avg">—</dd></div>
+          <div><dt>Макс.</dt><dd id="c-max">—</dd></div>
+          <div><dt>Мін.</dt><dd id="c-min">—</dd></div>
+        </dl>
+      </div>
+    </section>
+  </div>
+
+  <section class="ranking-card" aria-labelledby="rank-h">
+    <h2 id="rank-h" class="eyebrow">Усі райони — від найбруднішого повітря</h2>
+    <ol id="ranking" class="ranking"></ol>
+  </section>
+
+  <footer class="foot">KyivAir · навчальний проєкт, 2026 · Дані: відкриті мережі датчиків (SaveEcoBot, OpenAQ)</footer>
+</main>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

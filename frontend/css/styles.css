@@ -1,0 +1,173 @@
+/* KyivAir — стилі.
+   Layout: карта ліворуч як головний об'єкт, панель обраного району праворуч, рейтинг під ними; на телефоні — одна колонка.
+   Кольори бренду взято з презентацій команди (глибокий бірюзовий + бурштиновий). */
+:root {
+  --bg: #eef3f2;
+  --surface: #ffffff;
+  --ink: #0d2f33;
+  --ink-2: #3c5a5d;
+  --ink-3: #6b8487;
+  --line: #d6e1df;
+  --brand: #0f6b6a;
+  --amber: #e8960f;
+  --river: #b9d7e3;
+  --focus: #e8960f;
+  --font-display: "Unbounded", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r: 14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a1a1c; --surface: #11262a; --ink: #e5f0ee; --ink-2: #b3c7c5; --ink-3: #82999a;
+    --line: #21393c; --brand: #4cc2bc; --amber: #f2a93b; --river: #1d4352; --focus: #f2a93b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a1a1c; --surface: #11262a; --ink: #e5f0ee; --ink-2: #b3c7c5; --ink-3: #82999a;
+  --line: #21393c; --brand: #4cc2bc; --amber: #f2a93b; --river: #1d4352; --focus: #f2a93b;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.5 var(--font-body);
+}
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* ---------- шапка ---------- */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+.topbar-inner {
+  max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.brand { font: 700 1.15rem var(--font-display); color: var(--ink); text-decoration: none; letter-spacing: -0.01em; }
+.brand span { color: var(--brand); }
+.demo-badge { font-size: .72rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-2); border: 1px dashed var(--ink-3); border-radius: 99px; padding: 2px 9px; }
+.topbar-status { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.status { font-size: .85rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.status.is-stale { color: var(--amber); font-weight: 600; }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--line);
+  border-radius: 99px; padding: 6px 12px; cursor: pointer; font-size: .85rem; font-weight: 500;
+}
+.btn-ghost:hover { border-color: var(--brand); color: var(--brand); }
+.btn-ghost:disabled { opacity: .55; cursor: progress; }
+.btn-ghost[aria-busy="true"] svg { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.btn { background: var(--brand); color: var(--surface); border: 0; border-radius: 10px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+
+/* ---------- сторінка ---------- */
+.page {
+  max-width: 1180px; margin: 0 auto; display: grid; gap: 20px;
+  padding-block: 24px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.intro h1 { font: 700 clamp(1.35rem, 3.2vw, 2rem)/1.2 var(--font-display); margin: 0 0 6px; letter-spacing: -0.015em; text-wrap: balance; max-width: 26ch; }
+.intro p { margin: 0; color: var(--ink-2); max-width: 62ch; }
+.eyebrow { font: 600 .75rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin: 0 0 12px; }
+.muted { color: var(--ink-3); }
+
+.error {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between;
+  background: color-mix(in srgb, #e0453a 12%, var(--surface)); border: 1px solid #e0453a; border-radius: var(--r); padding: 12px 16px;
+}
+.error p { margin: 0; min-width: 0; }
+
+.layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+.map-card, .panel, .ranking-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; min-width: 0; }
+
+/* ---------- карта ---------- */
+.map-svg { width: 100%; height: auto; display: block; }
+.map-river { fill: var(--river); stroke: none; }
+.map-river-label { font: italic 500 12px var(--font-body); fill: var(--ink-3); text-anchor: middle; }
+.map-district {
+  stroke: var(--surface); stroke-width: 2; stroke-linejoin: round; cursor: pointer;
+  transition: filter .15s, stroke-width .15s;
+}
+.map-district:hover { filter: brightness(1.08) saturate(1.1); }
+.map-district:focus { outline: none; }
+.map-district:focus-visible, .map-district.is-selected { stroke: var(--ink); stroke-width: 3.5; }
+.map-district.is-nodata { fill-opacity: .55; }
+.map-labels { pointer-events: none; }
+.map-labels text { paint-order: stroke; stroke-width: 3px; stroke-linejoin: round; }
+.map-name { font: 600 11px var(--font-body); text-anchor: middle; }
+.map-value { font: 700 17px var(--font-display); text-anchor: middle; font-variant-numeric: tabular-nums; }
+
+.legend { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr)); gap: 6px 14px; }
+.legend-item { display: grid; grid-template-columns: 14px 3.6rem minmax(0, 1fr); align-items: center; gap: 8px; font-size: .82rem; }
+.legend-swatch { width: 14px; height: 14px; border-radius: 4px; }
+.legend-range { white-space: nowrap; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.fineprint { margin: 12px 0 0; font-size: .75rem; color: var(--ink-3); }
+
+/* ---------- панель району ---------- */
+.panel { --level: #9aa4b2; --level-ink: #fff; border-top: 6px solid var(--level); }
+.panel-head h2 { font: 700 1.2rem var(--font-display); margin: 0; letter-spacing: -0.01em; }
+.panel-head p { margin: 2px 0 0; font-size: .85rem; }
+.aqi-block { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center; margin: 16px 0; }
+.aqi-num {
+  display: grid; place-items: center; width: 104px; height: 104px; border-radius: 50%;
+  background: var(--level); color: var(--level-ink); line-height: 1;
+}
+.aqi-num span { font: 700 2.4rem var(--font-display); font-variant-numeric: tabular-nums; margin-top: 14px; }
+.aqi-num small { font-size: .7rem; font-weight: 600; letter-spacing: .1em; margin-bottom: 18px; opacity: .85; }
+.level-pill { display: inline-block; background: var(--level); color: var(--level-ink); font-weight: 600; font-size: .85rem; border-radius: 99px; padding: 3px 11px; }
+.stale-pill { display: inline-block; margin-left: 6px; font-size: .75rem; font-weight: 600; color: var(--amber); border: 1px solid var(--amber); border-radius: 99px; padding: 2px 8px; }
+.advice { margin: 8px 0 0; color: var(--ink-2); font-size: .92rem; }
+
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin: 0; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.facts div { background: var(--surface); padding: 10px 12px; }
+.facts dt { font-size: .75rem; color: var(--ink-3); }
+.facts dd { margin: 2px 0 0; font-weight: 600; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+
+.history { margin-top: 18px; }
+.history-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.history-head h3 { margin: 0; font-size: .95rem; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 99px; padding: 2px; }
+.seg button { border: 0; background: transparent; padding: 4px 12px; border-radius: 99px; font-size: .8rem; cursor: pointer; color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.chart-box { position: relative; height: 180px; margin-top: 10px; }
+.chart-note { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--ink-3); font-size: .85rem; background: var(--surface); text-align: center; }
+.mini { display: flex; gap: 22px; margin: 8px 0 0; }
+.mini dt { font-size: .72rem; color: var(--ink-3); }
+.mini dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ---------- рейтинг ---------- */
+.ranking { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.rank-row {
+  width: 100%; display: grid; grid-template-columns: 9.5rem minmax(0, 1fr) 2.6rem 11.5rem; align-items: center; gap: 12px;
+  background: transparent; border: 0; border-radius: 8px; padding: 7px 8px; cursor: pointer; text-align: left;
+}
+.rank-row:hover { background: var(--bg); }
+.rank-row.is-selected { background: var(--bg); box-shadow: inset 3px 0 0 var(--ink); }
+.rank-name { font-weight: 500; }
+.rank-bar { height: 8px; background: var(--bg); border-radius: 99px; overflow: hidden; }
+.rank-row.is-selected .rank-bar, .rank-row:hover .rank-bar { background: var(--surface); }
+.rank-bar span { display: block; height: 100%; border-radius: 99px; }
+.rank-val { font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.rank-level { justify-self: start; font-size: .75rem; font-weight: 600; border-radius: 99px; padding: 2px 9px; white-space: nowrap; }
+@media (max-width: 640px) {
+  .rank-row { grid-template-columns: minmax(0, 1fr) 2.4rem; row-gap: 4px; }
+  .rank-bar { grid-column: 1 / -1; grid-row: 2; }
+  .rank-level { display: none; }
+  .aqi-num { width: 88px; height: 88px; }
+  .aqi-num span { font-size: 2rem; }
+  .map-name { display: none; }
+  .map-value { font-size: 30px; transform: translateY(-6px); }
+  .map-river-label { font-size: 22px; }
+}
+
+.foot { color: var(--ink-3); font-size: .8rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+.panel { scroll-margin-top: 72px; }

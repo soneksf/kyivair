@@ -1,0 +1,19 @@
+{
+  "name": "kyivair-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "KyivAir — фронтенд: карта AQI за районами Києва",
+  "scripts": {
+    "start": "npx --yes http-server -p 8080 -c-1 .",
+    "test": "node --test tests/unit/*.test.js",
+    "test:e2e": "node --test --test-concurrency=1 tests/e2e/*.test.js",
+    "test:all": "npm test && npm run test:e2e",
+    "build:demo": "node scripts/build-demo.mjs"
+  },
+  "devDependencies": {
+    "chart.js": "^4.4.1",
+    "esbuild": "^0.24.0",
+    "playwright": "1.63.0"
+  }
+}
